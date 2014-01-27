@@ -48,7 +48,7 @@ CoverBackground {
         width: Theme.coverSizeSmall.width;
         fillMode: Image.PreserveAspectFit
     }
-
+/*
     Sensors.Compass {
            id: compass
            dataRate: 300
@@ -58,7 +58,7 @@ CoverBackground {
                rose_thumb.rotation = -compass.reading.azimuth
            }
     }
-
+*/
 }
 
 

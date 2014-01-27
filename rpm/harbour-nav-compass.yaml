@@ -1,5 +1,5 @@
-Name: harbour-sailcompass
-Summary: SailCompass is a small and simple Compass for easy navigation.
+Name: harbour-nav-compass
+Summary: Nav Compass is a small and simple Compass for easy navigation.
 Version: 0.2
 Release: 1
 Group: Qt/Qt
@@ -18,13 +18,15 @@ PkgConfigBR:
 - Qt5Quick
 Requires:
 - sailfishsilica-qt5 >= 0.10.9
+- qt5-qtdeclarative-import-sensors
+- qt5-qtdeclarative-import-positioning
 Files:
 - /usr/share/icons/hicolor/86x86/apps
 - /usr/share/applications
-- /usr/share/harbour-sailcompass
+- /usr/share/harbour-nav-compass
 - /usr/bin
 - '%{_datadir}/icons/hicolor/86x86/apps/%{name}.png'
 - '%{_datadir}/applications/%{name}.desktop'
 - '%{_datadir}/%{name}/qml'
 - '%{_bindir}'
-PkgBR: []
+PkgBR: [qt5-qtdeclarative-import-sensors, qt5-qtdeclarative-import-positioning, qt5-qtpositioning-devel]

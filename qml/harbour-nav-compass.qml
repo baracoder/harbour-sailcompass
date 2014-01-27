@@ -34,8 +34,13 @@ import "pages"
 
 ApplicationWindow
 {
-    initialPage: Component { CompassScreen { } }
+    initialPage: Component {
+        CompassScreen {
+            id: compassScreen
+        }
+    }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
 }
 
 

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 X-Nemo-Application-Type=silica-qt5
-Name=SailCompass
-Icon=harbour-sailcompass
-Exec=harbour-sailcompass
+Name=Nav Compass
+Icon=harbour-nav-compass
+Exec=harbour-nav-compass
 

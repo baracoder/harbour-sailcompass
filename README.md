@@ -1,6 +1,6 @@
-harbour-sailcompass
-===================
-SailCompass is a small and simple Compass for easier navigation. 
+Nav Compass
+===========
+Nav Compass is a small and simple Compass for easier navigation. 
 It contains:
 - a main view with compass,
 - an animated cover 

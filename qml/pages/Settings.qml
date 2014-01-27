@@ -43,14 +43,10 @@ Page {
         Column {
             id: column
             PageHeader {
-                title: "About SailCompass "
+                title: "About"
             }
             width: settingsPage.width
             spacing: Theme.paddingLarge
-//            TextSwitch {
-//                 id: updateCoverPage
-//                 text: "Update Coverpage\n(needs more battery!)"
-//            }
             Label{
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "SailCompass"
@@ -59,25 +55,10 @@ Page {
             }
             Label{
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "made by peterparker2k 2014"
+                text: "made by peterparker2k, baracoder 2014"
                 font.pixelSize: Theme.fontSizeTiny
                 color: Theme.secondaryColor
             }
-            Label{
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "Please donate to:"
-                font.pixelSize: Theme.fontSizeTiny
-                color: Theme.secondaryColor
-            }
-            Text
-               {
-                   id: link_Text
-                   anchors.horizontalCenter: parent.horizontalCenter
-                   text: '<html><a style="color:#000000" href="https://blockchain.info/address/1NK8YVH9EzmY6UQ5byjkH9Gy8DHwUAtxCi">1NK8YVH9EzmY6UQ5byjkH9Gy8DHwUAtxCi</a></html>'
-                   font.pixelSize: Theme.fontSizeSmall
-                   onLinkActivated: Qt.openUrlExternally(link)
-
-               }
         }
 
         VerticalScrollDecorator {}

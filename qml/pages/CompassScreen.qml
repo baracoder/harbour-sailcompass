@@ -29,52 +29,135 @@
 */
 
 import QtQuick 2.0
-import QtSensors 5.0 as Sensors
 
 import Sailfish.Silica 1.0
 
+import QtSensors 5.0
+import QtPositioning 5.0
 
 Page {
     id: compassScreen
+
+    Location {
+        id: target
+        coordinate {
+            latitude: 52.5672965040761
+            longitude: 13.32944981936337
+        }
+    }
+
     SilicaFlickable {
         anchors.fill: parent
         PullDownMenu {
             MenuItem {
-                text: "About SailCompass"
+                text: "About"
                 onClicked: pageStack.push(Qt.resolvedUrl("Settings.qml"))
             }
+            /*
+            MenuItem {
+                text: "Show map"
+            }
+            */
         }
-        Image {
-            id:rose
-            source: "../assets/rose.png"
-            anchors.centerIn: parent
-            fillMode: Image.PreserveAspectCrop
+        Column {
+            spacing: Theme.paddingLarge
+            anchors.fill: parent
+            Text {
+                id: degrees
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: '--°'
+                font.pixelSize: Theme.fontSizeHuge
+                color: Theme.primaryColor
+            }
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: 'V'
+                font.pixelSize: Theme.fontSizeHuge
+                color: Theme.secondaryColor
+            }
+            Image {
+                id:rose
+                source: "../assets/rose.png"
+                anchors.horizontalCenter: parent.horizontalCenter
+                fillMode: Image.PreserveAspectCrop
+                opacity: 0.8
+                Behavior on rotation {
+                    RotationAnimation {
+                    }
+                }
+                Image {
+                    id: roseTarget
+                    source: "../assets/rose.png"
+                    anchors.centerIn: parent
+                    fillMode: Image.PreserveAspectCrop
+                    width: rose.width/2
+                    height: rose.height/2
+                    opacity: 0.8
+                    Behavior on rotation {
+                        RotationAnimation {
+                        }
+                    }
+                    Text {
+                        id: distance
+                        text: '? m'
+                        color: Theme.primaryColor
+                        anchors.centerIn: parent
+                    }
+                }
+            }
 
-            Behavior on rotation {
-                SmoothedAnimation{ velocity: -1; duration:100;maximumEasingTime: 100 }
+
+            Text {
+                text: "Position: " + positionSource.position.coordinate.latitude + ", " + positionSource.position.coordinate.longitude
+                color: Theme.primaryColor
+            }
+            Text {
+                text: "Accuracy: " + positionSource.position.horizontalAccuracy +'m'
+                color: Theme.primaryColor
+            }
+
+
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                Button {
+                    text: 'Save position'
+                    onClicked: {
+
+                    }
+                }
+                Button {
+                    text: 'Select target'
+                    onClicked: pageStack.push(Qt.resolvedUrl("SelectTarget.qml"))
+                }
             }
         }
-
-        Sensors.Compass {
-               id: compass
-               dataRate: 50
-               active:true
-               property int old_value: 0
-
-               onReadingChanged: {
-                   var new_value = -1.0 * compass.reading.azimuth
-                   if (Math.abs(old_value-new_value)>270){
-                       if (old_value > new_value){
-                           new_value += 360.0
-                       }else{
-                           new_value -= 360.0
-                       }
-                   }
-                   old_value = new_value
-                   rose.rotation = new_value
-               }
-        }
     }
+    Compass {
+           id: compass
+           active:true
+           onReadingChanged: {
+               var new_value = -reading.azimuth
+               if (Math.abs(rose.rotation - new_value) > 270) {
+                   if (rose.rotation > new_value){
+                       new_value += 360.0
+                   } else {
+                       new_value -= 360.0
+                   }
+               }
+               rose.rotation = 1.0 * new_value
+               degrees.text = reading.azimuth + '°'
+
+               roseTarget.rotation = positionSource.position.coordinate.azimuthTo(target.coordinate)
+               distance.text = Math.round(positionSource.position.coordinate.distanceTo(target.coordinate)) + 'm'
+           }
+    }
+    PositionSource {
+        id: positionSource
+        active: true
+        updateInterval: 1000
+    }
+
+
 }
 
 
