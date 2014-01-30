@@ -29,21 +29,33 @@
 */
 
 import QtQuick 2.0
-
 import Sailfish.Silica 1.0
-
-import QtSensors 5.0
-import QtPositioning 5.0
 
 Page {
     id: compassScreen
+    property real azimuth
+    property real targetAzimuth
+    property real targetDistance
+    property real lat
+    property real lon
+    property real horizAc
+    signal savePosition
+    signal selectTarget
 
-    Location {
-        id: target
-        coordinate {
-            latitude: 52.5672965040761
-            longitude: 13.32944981936337
+    onAzimuthChanged: updateRose()
+    onTargetAzimuthChanged: updateRose()
+
+    function updateRose () {
+        var new_value = -azimuth
+        if (Math.abs(rose.rotation - new_value) > 270) {
+            if (rose.rotation > new_value){
+                new_value += 360.0
+            } else {
+                new_value -= 360.0
+            }
         }
+        rose.rotation = new_value
+        degrees.text = azimuth + '°'
     }
 
     SilicaFlickable {
@@ -60,7 +72,7 @@ Page {
             */
         }
         Column {
-            spacing: Theme.paddingLarge
+            spacing: Theme.paddingMedium
             anchors.fill: parent
             Text {
                 id: degrees
@@ -93,27 +105,30 @@ Page {
                     width: rose.width/2
                     height: rose.height/2
                     opacity: 0.8
+                    rotation: targetAzimuth
                     Behavior on rotation {
                         RotationAnimation {
                         }
                     }
                     Text {
                         id: distance
-                        text: '? m'
+                        text: Math.round(targetDistance) + 'm'
                         color: Theme.primaryColor
                         anchors.centerIn: parent
+                        font.pixelSize: Theme.fontSizeMedium
                     }
                 }
             }
 
-
             Text {
-                text: "Position: " + positionSource.position.coordinate.latitude + ", " + positionSource.position.coordinate.longitude
+                text: "Position: " + lat + ", " + lon
                 color: Theme.primaryColor
+                font.pixelSize: Theme.fontSizeSmall
             }
             Text {
-                text: "Accuracy: " + positionSource.position.horizontalAccuracy +'m'
+                text: "Accuracy: " + horizAc +'m'
                 color: Theme.primaryColor
+                font.pixelSize: Theme.fontSizeSmall
             }
 
 
@@ -121,41 +136,16 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 Button {
                     text: 'Save position'
-                    onClicked: {
-
-                    }
+                    onClicked: savePosition()
                 }
                 Button {
                     text: 'Select target'
-                    onClicked: pageStack.push(Qt.resolvedUrl("SelectTarget.qml"))
+                    onClicked: selectTarget()
                 }
             }
         }
     }
-    Compass {
-           id: compass
-           active:true
-           onReadingChanged: {
-               var new_value = -reading.azimuth
-               if (Math.abs(rose.rotation - new_value) > 270) {
-                   if (rose.rotation > new_value){
-                       new_value += 360.0
-                   } else {
-                       new_value -= 360.0
-                   }
-               }
-               rose.rotation = 1.0 * new_value
-               degrees.text = reading.azimuth + '°'
 
-               roseTarget.rotation = positionSource.position.coordinate.azimuthTo(target.coordinate)
-               distance.text = Math.round(positionSource.position.coordinate.distanceTo(target.coordinate)) + 'm'
-           }
-    }
-    PositionSource {
-        id: positionSource
-        active: true
-        updateInterval: 1000
-    }
 
 
 }

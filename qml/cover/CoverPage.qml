@@ -33,32 +33,60 @@ import Sailfish.Silica 1.0
 import QtSensors 5.0 as Sensors
 
 CoverBackground {
+    property real targetAzimuth: 0
+    property real azimuth: 0
+    property real targetDistance: -1
+
+    onAzimuthChanged: updateRose()
+    onTargetAzimuthChanged: updateRose()
+
+    function updateRose () {
+        onAzimuthChanged: {
+            var new_value = targetAzimuth-azimuth
+            if (Math.abs(rose.rotation - new_value) > 270) {
+                if (rose.rotation > new_value){
+                    new_value += 360.0
+                } else {
+                    new_value -= 360.0
+                }
+            }
+            rose.rotation = 1.0 * new_value
+        }
+    }
+
     Label {
-        id: label
         anchors.top: parent
         anchors.topMargin: 5
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "SailCompass"
+        text: "Nav Compass"
     }
 
     Image {
-        id:rose_thumb
+        id:rose
         source: "../assets/rose.png"
         anchors.centerIn: parent
-        width: Theme.coverSizeSmall.width;
+        width: Theme.coverSizeSmall.width
         fillMode: Image.PreserveAspectFit
+        Behavior on rotation {
+            RotationAnimation {}
+        }
+        Label {
+            anchors.centerIn: parent
+            text: Math.round(targetDistance) + 'm'
+        }
     }
-/*
-    Sensors.Compass {
-           id: compass
-           dataRate: 300
-           active:true
 
-           onReadingChanged: {
-               rose_thumb.rotation = -compass.reading.azimuth
-           }
+    CoverActionList {
+        CoverAction {
+            iconSource: "image://theme/icon-cover-refresh"
+            onTriggered: console.log('todo')
+        }
+        CoverAction {
+            iconSource: "image://theme/icon-cover-refresh"
+            onTriggered: console.log('todo')
+        }
     }
-*/
+
 }
 
 

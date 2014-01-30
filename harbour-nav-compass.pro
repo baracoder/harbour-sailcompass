@@ -19,5 +19,6 @@ OTHER_FILES += qml/harbour-nav-compass.qml \
     harbour-nav-compass.desktop \
     qml/pages/CompassScreen.qml \
     qml/pages/Settings.qml \
-    qml/pages/SelectTarget.qml
+    qml/pages/SelectTarget.qml \
+    qml/Storage.qml
 
