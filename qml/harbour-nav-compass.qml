@@ -56,6 +56,9 @@ ApplicationWindow
 
     initialPage: Component {
         CompassScreen {
+            Component.onCompleted: {
+                storage.initialize(doSetLastTarget);
+            }
             id: compassScreen
             azimuth: compass.reading.azimuth
             targetAzimuth: positionSource.position.coordinate.azimuthTo(target.coordinate)
@@ -74,9 +77,11 @@ ApplicationWindow
                     for (i=0; i< rows.length; i++) {
                         item = rows.item(i)
                         selectTargetPage.m.append({
+                            lid: item.id,
                             locationName: item.name,
                             locationPosition: item.lat + ', ' + item.lon
                         })
+                        console.log(JSON.stringify(item))
                         console.log(item.name)
                     }
                 });
@@ -96,6 +101,18 @@ ApplicationWindow
     SelectTarget {
         id: selectTargetPage
         onTargetAdd: doAddTarget(name, lat, lon)
+        onPositionSelected: {
+            storage.targetGet(position, function (row) {
+                if (row) {
+                    target.coordinate.latitude = row.lat
+                    target.coordinate.longitude = row.lon
+                    console.log('coordinates set as target')
+                    pageStack.pop()
+                } else {
+                    console.error('no entry found')
+                }
+            });
+        }
     }
 
     Location {
@@ -138,9 +155,4 @@ ApplicationWindow
         });
     }
 
-    Component.onCompleted: {
-        storage.initialize(function () {
-            doSetLastTarget();
-        })
-    }
 }

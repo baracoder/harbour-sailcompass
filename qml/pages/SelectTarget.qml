@@ -8,6 +8,7 @@ Page {
     property alias m: model
 
     signal targetAdd(string name, real lat, real lon)
+    signal positionSelected(int position)
 
     ListModel {
         id: model
@@ -20,9 +21,13 @@ Page {
         }
     }
     */
-    SilicaListView {
-        id: locationList
-        anchors.fill: parent
+    Column {
+        id: addColumn
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
         PageHeader {
             title: "Select target"
         }
@@ -57,26 +62,46 @@ Page {
             text: 'Add'
             onClicked: targetAdd(name.text, parseFloat(lat.text), parseFloat(lon.text))
         }
+    }
+    SilicaListView {
+        id: locationList
+        ScrollDecorator {
 
+        }
+        anchors {
+            top: addColumn.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
         header: Label {
             text: "Saved locations"
+            font.family: Theme.fontFamilyHeading
         }
         model: model
+        spacing: 10
+        clip: true
         delegate: BackgroundItem {
             id: delegate
-            height: childrenRect.height
+            height: contentItem.childrenRect.height
+            onClicked: positionSelected(lid)
             Label {
-                text: locationName
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.right: parent.right
+                id: locLabelName
+                text: locationName + ': ' + lid
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
                 color: Theme.primaryColor
             }
             Label {
                 text: locationPosition
-                anchors.top: locationName.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors {
+                    top: locLabelName.bottom
+                    left: parent.left
+                    right: parent.right
+                }
                 color: Theme.secondaryColor
             }
         }
