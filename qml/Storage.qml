@@ -9,7 +9,7 @@ Item {
 
     function initialize(callback) {
         getDB().transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS targets (id INT UNIQUE, name TEXT, lat REAL, lon REAL, lastUsed INTEGER)');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS targets (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, lat REAL, lon REAL, lastUsed INTEGER)');
             callback()
         });
     }
@@ -27,15 +27,18 @@ Item {
     // This function is used to retrieve a setting from the database
     function targetGet(id, callback) {
         getDB().transaction(function(tx) {
+            console.log('selecting: '+id)
             var rs = tx.executeSql('SELECT * FROM targets WHERE id=? LIMIT 1;', [id]);
-            tx.executeSql('UPDATE targets SET lastUsed=? WHERE id=? LIMIT 1;', [new Date.getTime(), id]);
             callback(rs.rows.item(0))
+        });
+        getDB().transaction(function(tx) {
+            tx.executeSql('UPDATE targets SET lastUsed=? WHERE id=?;', [new Date().getTime(), id]);
         });
     }
 
     function targetGetLastUsed(callback) {
         getDB().transaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM targets ORDER BY lastUsed DESC LIMIT 1;');
+            var rs = tx.executeSql('SELECT * FROM targets ORDER BY lastUsed DESC;');
             if (rs.rows.length > 0) {
                 callback(rs.rows.item(0))
             } else {
