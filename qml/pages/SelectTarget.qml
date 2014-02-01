@@ -60,7 +60,11 @@ Page {
         Button {
             id: buttonAdd
             text: 'Add'
-            onClicked: targetAdd(name.text, parseFloat(lat.text), parseFloat(lon.text))
+            onClicked: {
+                var fLat = parseFloat(lat.text.replace(',','.'))
+                var fLon = parseFloat(lon.text.replace(',','.'))
+                targetAdd(name.text, fLat, fLon)
+            }
         }
     }
     SilicaListView {
